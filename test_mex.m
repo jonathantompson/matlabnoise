@@ -11,7 +11,7 @@ Z = zeros(size(X,1), size(X,2));
 W = zeros(size(X,1), size(X,2));
 
 figure;
-noise = Perlin3D(X, Y, Z);
+noise = Perlin2D(X, Y);
 imshow(noise, [min(noise(:)) max(noise(:))]);
 
 figure;
