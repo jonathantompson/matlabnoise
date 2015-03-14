@@ -76,7 +76,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   // data[(m-1)+(n-1)*7+(p-1)*7*8] = 1;
   
   for (size_t i = 0; i < npts; i++) {
-    vec4 s_and_deriv = Perlin3DDeriv(vec2(X[i], Y[i], Z[i]));
+    vec4 s_and_deriv = Perlin3DDeriv(vec3(X[i], Y[i], Z[i]));
     out[i] = s_and_deriv.x;
     dout[i*3] = s_and_deriv.y;
     dout[i*3+1] = s_and_deriv.z;
