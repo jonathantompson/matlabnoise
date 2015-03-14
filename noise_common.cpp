@@ -599,53 +599,53 @@ double Perlin4D( const vec4& P )
 //	Classic Perlin 2D noise with derivatives
 //	returns vec3( value, xderiv, yderiv )
 //
-vec3 Perlin2D_Deriv( const vec2& P )
+vec3 Perlin2DDeriv( const vec2& P )
 {
-    //  https://github.com/BrianSharpe/Wombat/blob/master/Perlin2D_Deriv.glsl
-
-    // establish our grid cell and unit position
-    vec2 Pi = floor(P);
-    vec4 Pf_Pfmin1 = vec4(P.x, P.y, P.x, P.y) - vec4( Pi.x, Pi.y, Pi.x + 1.0, Pi.y + 1.0 );
-
-    //	calculate the hash.
-    //	( various hashing methods listed in order of speed )
-    vec4 hash_x, hash_y;
-    FAST32_hash_2D( Pi, hash_x, hash_y );
-    //SGPP_hash_2D( Pi, hash_x, hash_y );
-
-    //	calculate the gradient results
-    vec4 grad_x = hash_x - 0.49999;
-    vec4 grad_y = hash_y - 0.49999;
-    vec4 norm = inversesqrt( grad_x * grad_x + grad_y * grad_y );
-    grad_x *= norm;
-    grad_y *= norm;
-    vec4 dotval = ( grad_x * vec4(Pf_Pfmin1.x, Pf_Pfmin1.z, Pf_Pfmin1.x, Pf_Pfmin1.z) + grad_y * vec4(Pf_Pfmin1.y, Pf_Pfmin1.y, Pf_Pfmin1.w, Pf_Pfmin1.w) );
-
-    //	Convert our data to a more parallel format
-    vec3 dotval0_grad0 = vec3( dotval.x, grad_x.x, grad_y.x );
-    vec3 dotval1_grad1 = vec3( dotval.y, grad_x.y, grad_y.y );
-    vec3 dotval2_grad2 = vec3( dotval.z, grad_x.z, grad_y.z );
-    vec3 dotval3_grad3 = vec3( dotval.w, grad_x.w, grad_y.w );
-
-    //	evaluate common constants
-    vec3 k0_gk0 = dotval1_grad1 - dotval0_grad0;
-    vec3 k1_gk1 = dotval2_grad2 - dotval0_grad0;
-    vec3 k2_gk2 = dotval3_grad3 - dotval2_grad2 - k0_gk0;
-
-    //	C2 Interpolation
-    vec4 blend = Interpolation_C2_InterpAndDeriv( vec2(Pf_Pfmin1.x, Pf_Pfmin1.y) );
-
-    //	calculate final noise + deriv
-    vec3 results = dotval0_grad0
-                    + blend.x * k0_gk0
-                    + blend.y * ( k1_gk1 + blend.x * k2_gk2 );
- 
-    vec2 results_yz = vec2(results.y, results.z);
-    results_yz += vec2(blend.z, blend.w) * ( vec2( k0_gk0.x, k1_gk1.x ) + vec2(blend.y, blend.x) * k2_gk2.x );
-    results.y = results_yz.x;
-    results.z = results_yz.y;
-
-    return results * 1.4142135623730950488016887242097;  // scale things to a strict -1.0->1.0 range  *= 1.0/sqrt(0.5)
+  //  https://github.com/BrianSharpe/Wombat/blob/master/Perlin2D_Deriv.glsl
+  
+  // establish our grid cell and unit position
+  vec2 Pi = floor(P);
+  vec4 Pf_Pfmin1 = vec4(P.x, P.y, P.x, P.y) - vec4( Pi.x, Pi.y, Pi.x + 1.0, Pi.y + 1.0 );
+  
+  //	calculate the hash.
+  //	( various hashing methods listed in order of speed )
+  vec4 hash_x, hash_y;
+  FAST32_hash_2D( Pi, hash_x, hash_y );
+  //SGPP_hash_2D( Pi, hash_x, hash_y );
+  
+  //	calculate the gradient results
+  vec4 grad_x = hash_x - 0.49999;
+  vec4 grad_y = hash_y - 0.49999;
+  vec4 norm = inversesqrt( grad_x * grad_x + grad_y * grad_y );
+  grad_x *= norm;
+  grad_y *= norm;
+  vec4 dotval = ( grad_x * vec4(Pf_Pfmin1.x, Pf_Pfmin1.z, Pf_Pfmin1.x, Pf_Pfmin1.z) + grad_y * vec4(Pf_Pfmin1.y, Pf_Pfmin1.y, Pf_Pfmin1.w, Pf_Pfmin1.w) );
+  
+  //	Convert our data to a more parallel format
+  vec3 dotval0_grad0 = vec3( dotval.x, grad_x.x, grad_y.x );
+  vec3 dotval1_grad1 = vec3( dotval.y, grad_x.y, grad_y.y );
+  vec3 dotval2_grad2 = vec3( dotval.z, grad_x.z, grad_y.z );
+  vec3 dotval3_grad3 = vec3( dotval.w, grad_x.w, grad_y.w );
+  
+  //	evaluate common constants
+  vec3 k0_gk0 = dotval1_grad1 - dotval0_grad0;
+  vec3 k1_gk1 = dotval2_grad2 - dotval0_grad0;
+  vec3 k2_gk2 = dotval3_grad3 - dotval2_grad2 - k0_gk0;
+  
+  //	C2 Interpolation
+  vec4 blend = Interpolation_C2_InterpAndDeriv( vec2(Pf_Pfmin1.x, Pf_Pfmin1.y) );
+  
+  //	calculate final noise + deriv
+  vec3 results = dotval0_grad0
+          + blend.x * k0_gk0
+          + blend.y * ( k1_gk1 + blend.x * k2_gk2 );
+  
+  vec2 results_yz = vec2(results.y, results.z);
+  results_yz += vec2(blend.z, blend.w) * ( vec2( k0_gk0.x, k1_gk1.x ) + vec2(blend.y, blend.x) * k2_gk2.x );
+  results.y = results_yz.x;
+  results.z = results_yz.y;
+  
+  return results * 1.4142135623730950488016887242097;  // scale things to a strict -1.0->1.0 range  *= 1.0/sqrt(0.5)
 }
 
 //
@@ -653,82 +653,82 @@ vec3 Perlin2D_Deriv( const vec2& P )
 //	Classic Perlin 3D noise with derivatives
 //	returns vec4( value, xderiv, yderiv, zderiv )
 //
-vec4 Perlin3D_Deriv( const vec3& P )
+vec4 Perlin3DDeriv( const vec3& P )
 {
-    //	establish our grid cell and unit position
-    vec3 Pi = floor(P);
-    vec3 Pf = P - Pi;
-    vec3 Pf_min1 = Pf - 1.0;
-
-    //	calculate the hash.
-    //	( various hashing methods listed in order of speed )
-    vec4 hashx0, hashy0, hashz0, hashx1, hashy1, hashz1;
-    FAST32_hash_3D( Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1 );
-    //SGPP_hash_3D( Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1 );
-
-    //	calculate the gradients
-    vec4 grad_x0 = hashx0 - 0.49999;
-    vec4 grad_y0 = hashy0 - 0.49999;
-    vec4 grad_z0 = hashz0 - 0.49999;
-    vec4 grad_x1 = hashx1 - 0.49999;
-    vec4 grad_y1 = hashy1 - 0.49999;
-    vec4 grad_z1 = hashz1 - 0.49999;
-    vec4 norm_0 = inversesqrt( grad_x0 * grad_x0 + grad_y0 * grad_y0 + grad_z0 * grad_z0 );
-    vec4 norm_1 = inversesqrt( grad_x1 * grad_x1 + grad_y1 * grad_y1 + grad_z1 * grad_z1 );
-    grad_x0 *= norm_0;
-    grad_y0 *= norm_0;
-    grad_z0 *= norm_0;
-    grad_x1 *= norm_1;
-    grad_y1 *= norm_1;
-    grad_z1 *= norm_1;
-
-    //	calculate the dot products
-    vec4 dotval_0 = vec4( Pf.x, Pf_min1.x, Pf.x, Pf_min1.x ) * grad_x0 + vec4( Pf.y, Pf.y, Pf_min1.y, Pf_min1.y ) * grad_y0 + Pf.z * grad_z0;
-    vec4 dotval_1 = vec4( Pf.x, Pf_min1.x, Pf.x, Pf_min1.x ) * grad_x1 + vec4( Pf.y, Pf.y, Pf_min1.y, Pf_min1.y ) * grad_y1 + Pf_min1.z * grad_z1;
-
-    //
-    //	NOTE:  the following is based off Milo Yips derivation, but modified for parallel execution
-    //	http://stackoverflow.com/a/14141774
-    //
-
-    //	Convert our data to a more parallel format
-    vec4 dotval0_grad0 = vec4( dotval_0.x, grad_x0.x, grad_y0.x, grad_z0.x );
-    vec4 dotval1_grad1 = vec4( dotval_0.y, grad_x0.y, grad_y0.y, grad_z0.y );
-    vec4 dotval2_grad2 = vec4( dotval_0.z, grad_x0.z, grad_y0.z, grad_z0.z );
-    vec4 dotval3_grad3 = vec4( dotval_0.w, grad_x0.w, grad_y0.w, grad_z0.w );
-    vec4 dotval4_grad4 = vec4( dotval_1.x, grad_x1.x, grad_y1.x, grad_z1.x );
-    vec4 dotval5_grad5 = vec4( dotval_1.y, grad_x1.y, grad_y1.y, grad_z1.y );
-    vec4 dotval6_grad6 = vec4( dotval_1.z, grad_x1.z, grad_y1.z, grad_z1.z );
-    vec4 dotval7_grad7 = vec4( dotval_1.w, grad_x1.w, grad_y1.w, grad_z1.w );
-
-    //	evaluate common constants
-    vec4 k0_gk0 = dotval1_grad1 - dotval0_grad0;
-    vec4 k1_gk1 = dotval2_grad2 - dotval0_grad0;
-    vec4 k2_gk2 = dotval4_grad4 - dotval0_grad0;
-    vec4 k3_gk3 = dotval3_grad3 - dotval2_grad2 - k0_gk0;
-    vec4 k4_gk4 = dotval5_grad5 - dotval4_grad4 - k0_gk0;
-    vec4 k5_gk5 = dotval6_grad6 - dotval4_grad4 - k1_gk1;
-    vec4 k6_gk6 = (dotval7_grad7 - dotval6_grad6) - (dotval5_grad5 - dotval4_grad4) - k3_gk3;
-
-    //	C2 Interpolation
-    vec3 blend = Interpolation_C2( Pf );
-    vec3 blendDeriv = Interpolation_C2_Deriv( Pf );
-
-    //	calculate final noise + deriv
-    double u = blend.x;
-    double v = blend.y;
-    double w = blend.z;
-
-    vec4 result = dotval0_grad0
-        + u * ( k0_gk0 + v * k3_gk3 )
-        + v * ( k1_gk1 + w * k5_gk5 )
-        + w * ( k2_gk2 + u * ( k4_gk4 + v * k6_gk6 ) );
-
-    result.y += dot( vec4( k0_gk0.x, k3_gk3.x * v, k4_gk4.x * w, k6_gk6.x * v * w ), vec4( blendDeriv.x ) );
-    result.z += dot( vec4( k1_gk1.x, k3_gk3.x * u, k5_gk5.x * w, k6_gk6.x * u * w ), vec4( blendDeriv.y ) );
-    result.w += dot( vec4( k2_gk2.x, k4_gk4.x * u, k5_gk5.x * v, k6_gk6.x * u * v ), vec4( blendDeriv.z ) );
-
-    //	normalize and return
-    result *= 1.1547005383792515290182975610039;		//	(optionally) scale things to a strict -1.0->1.0 range    *= 1.0/sqrt(0.75)
-    return result;
+  //	establish our grid cell and unit position
+  vec3 Pi = floor(P);
+  vec3 Pf = P - Pi;
+  vec3 Pf_min1 = Pf - 1.0;
+  
+  //	calculate the hash.
+  //	( various hashing methods listed in order of speed )
+  vec4 hashx0, hashy0, hashz0, hashx1, hashy1, hashz1;
+  FAST32_hash_3D( Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1 );
+  //SGPP_hash_3D( Pi, hashx0, hashy0, hashz0, hashx1, hashy1, hashz1 );
+  
+  //	calculate the gradients
+  vec4 grad_x0 = hashx0 - 0.49999;
+  vec4 grad_y0 = hashy0 - 0.49999;
+  vec4 grad_z0 = hashz0 - 0.49999;
+  vec4 grad_x1 = hashx1 - 0.49999;
+  vec4 grad_y1 = hashy1 - 0.49999;
+  vec4 grad_z1 = hashz1 - 0.49999;
+  vec4 norm_0 = inversesqrt( grad_x0 * grad_x0 + grad_y0 * grad_y0 + grad_z0 * grad_z0 );
+  vec4 norm_1 = inversesqrt( grad_x1 * grad_x1 + grad_y1 * grad_y1 + grad_z1 * grad_z1 );
+  grad_x0 *= norm_0;
+  grad_y0 *= norm_0;
+  grad_z0 *= norm_0;
+  grad_x1 *= norm_1;
+  grad_y1 *= norm_1;
+  grad_z1 *= norm_1;
+  
+  //	calculate the dot products
+  vec4 dotval_0 = vec4( Pf.x, Pf_min1.x, Pf.x, Pf_min1.x ) * grad_x0 + vec4( Pf.y, Pf.y, Pf_min1.y, Pf_min1.y ) * grad_y0 + Pf.z * grad_z0;
+  vec4 dotval_1 = vec4( Pf.x, Pf_min1.x, Pf.x, Pf_min1.x ) * grad_x1 + vec4( Pf.y, Pf.y, Pf_min1.y, Pf_min1.y ) * grad_y1 + Pf_min1.z * grad_z1;
+  
+  //
+  //	NOTE:  the following is based off Milo Yips derivation, but modified for parallel execution
+  //	http://stackoverflow.com/a/14141774
+  //
+  
+  //	Convert our data to a more parallel format
+  vec4 dotval0_grad0 = vec4( dotval_0.x, grad_x0.x, grad_y0.x, grad_z0.x );
+  vec4 dotval1_grad1 = vec4( dotval_0.y, grad_x0.y, grad_y0.y, grad_z0.y );
+  vec4 dotval2_grad2 = vec4( dotval_0.z, grad_x0.z, grad_y0.z, grad_z0.z );
+  vec4 dotval3_grad3 = vec4( dotval_0.w, grad_x0.w, grad_y0.w, grad_z0.w );
+  vec4 dotval4_grad4 = vec4( dotval_1.x, grad_x1.x, grad_y1.x, grad_z1.x );
+  vec4 dotval5_grad5 = vec4( dotval_1.y, grad_x1.y, grad_y1.y, grad_z1.y );
+  vec4 dotval6_grad6 = vec4( dotval_1.z, grad_x1.z, grad_y1.z, grad_z1.z );
+  vec4 dotval7_grad7 = vec4( dotval_1.w, grad_x1.w, grad_y1.w, grad_z1.w );
+  
+  //	evaluate common constants
+  vec4 k0_gk0 = dotval1_grad1 - dotval0_grad0;
+  vec4 k1_gk1 = dotval2_grad2 - dotval0_grad0;
+  vec4 k2_gk2 = dotval4_grad4 - dotval0_grad0;
+  vec4 k3_gk3 = dotval3_grad3 - dotval2_grad2 - k0_gk0;
+  vec4 k4_gk4 = dotval5_grad5 - dotval4_grad4 - k0_gk0;
+  vec4 k5_gk5 = dotval6_grad6 - dotval4_grad4 - k1_gk1;
+  vec4 k6_gk6 = (dotval7_grad7 - dotval6_grad6) - (dotval5_grad5 - dotval4_grad4) - k3_gk3;
+  
+  //	C2 Interpolation
+  vec3 blend = Interpolation_C2( Pf );
+  vec3 blendDeriv = Interpolation_C2_Deriv( Pf );
+  
+  //	calculate final noise + deriv
+  double u = blend.x;
+  double v = blend.y;
+  double w = blend.z;
+  
+  vec4 result = dotval0_grad0
+          + u * ( k0_gk0 + v * k3_gk3 )
+          + v * ( k1_gk1 + w * k5_gk5 )
+          + w * ( k2_gk2 + u * ( k4_gk4 + v * k6_gk6 ) );
+  
+  result.y += dot( vec4( k0_gk0.x, k3_gk3.x * v, k4_gk4.x * w, k6_gk6.x * v * w ), vec4( blendDeriv.x ) );
+  result.z += dot( vec4( k1_gk1.x, k3_gk3.x * u, k5_gk5.x * w, k6_gk6.x * u * w ), vec4( blendDeriv.y ) );
+  result.w += dot( vec4( k2_gk2.x, k4_gk4.x * u, k5_gk5.x * v, k6_gk6.x * u * v ), vec4( blendDeriv.z ) );
+  
+  //	normalize and return
+  result *= 1.1547005383792515290182975610039;		//	(optionally) scale things to a strict -1.0->1.0 range    *= 1.0/sqrt(0.75)
+  return result;
 }

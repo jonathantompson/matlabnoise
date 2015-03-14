@@ -16,6 +16,11 @@ noise = Perlin2D(X, Y);
 imshow(noise, [min(noise(:)) max(noise(:))]);
 title('Perlin2D');
 
+% 2D Gradient
+[noise, gradNoise] = Perlin2DDeriv(X, Y);
+plot_scalar_and_grad(noise, gradNoise);
+title('Perlin2DDeriv (should be same scalar field as Perlin2D)');
+
 % 3D Grid
 ydim = 64;
 xdim = 64;
@@ -31,7 +36,8 @@ figure;
 noise = Perlin3D(X, Y, Z);
 noise = noise - min(noise(:));
 noise = noise / max(noise(:));
-contourslice(noise, [], [], [1,10,20,30], 16);
+h = contourslice(noise, [], [], [1,10,20,30], 16);
+set(h, 'LineWidth', 1.5);
 view(3);
 axis tight
 title('Perlin3D');
@@ -46,9 +52,10 @@ for i = 1:4
   noise = Perlin4D(X, Y, Z, W);
   noise = noise - min(noise(:));
   noise = noise / max(noise(:));
-  contourslice(noise, [], [], [1,10,20,30], 16);
+  h = contourslice(noise, [], [], [1,10,20,30], 16);
+  set(h, 'LineWidth', 1.5);
   view(3);
   axis tight
   title(['Perlin4D w=', num2str(i)]);
+  grid on;
 end
-grid on;
