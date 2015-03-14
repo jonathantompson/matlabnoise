@@ -1,6 +1,7 @@
 **matlabnoise - Jonathan's Matlab noise library (C++ port of GPU-Noise-Lib)**
 ---------
 ---------
+![Image of Perlin Gradient Field](grad_field.jpg)
 
 **Overview**
 --------

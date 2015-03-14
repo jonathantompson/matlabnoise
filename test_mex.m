@@ -19,7 +19,10 @@ title('Perlin2D');
 % 2D Gradient
 [noise, gradNoise] = Perlin2DDeriv(X, Y);
 plot_scalar_and_grad(noise, gradNoise);
-title('Perlin2DDeriv (should be same scalar field as Perlin2D)');
+% title('Perlin2DDeriv');
+
+% addpath('C:\Users\IggyMenou\Documents\NYU\detection_nets\matlab\export_fig');
+% export_fig('grad_field.jpg', gcf, '-jpg', '-a4');
 
 % 3D Grid
 ydim = 64;

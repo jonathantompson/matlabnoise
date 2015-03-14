@@ -6,7 +6,7 @@ function [ ] = plot_scalar_and_grad( A, gradA )
 
   Ap = A - min(A(:));
   Ap = Ap / max(Ap(:));
-  d = ceil(xdim / 20);  % decimation ratio
+  d = ceil(xdim / 15);  % decimation ratio
   imshow(repmat(Ap,1,1,3)); hold on;
   [U, V] = ndgrid(1:xdim, 1:ydim); colormap default;
   contour(V, U, Ap, 'LineWidth', 1.5);
