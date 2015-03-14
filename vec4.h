@@ -26,10 +26,10 @@ public:
   };
   
   vec4& operator=(const vec4& rhs){
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->w = w;
+    this->x = rhs.x;
+    this->y = rhs.y;
+    this->z = rhs.z;
+    this->w = rhs.w;
     return *this;
   };
   
@@ -83,10 +83,6 @@ public:
   
   friend vec4 operator/( double scalar, const vec4& v ) {
     return vec4(scalar / v.x, scalar / v.y, scalar / v.z, scalar / v.w);
-  }
-  
-  double dot(const vec4& rhs) const {
-    return (x * rhs.x + y * rhs.y + z * rhs.z + w * rhs.w);
   }
   
   vec4& operator+=(const double scalar) {

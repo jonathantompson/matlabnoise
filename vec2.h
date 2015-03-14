@@ -20,8 +20,8 @@ public:
   };
   
   vec2& operator=(const vec2& rhs){
-    this->x = x;
-    this->y = y;
+    this->x = rhs.x;
+    this->y = rhs.y;
     return *this;
   };
   
@@ -75,10 +75,6 @@ public:
   
   friend vec2 operator/( double scalar, const vec2& v ) {
     return vec2(scalar / v.x, scalar / v.y);
-  }
-  
-  double dot(const vec2& rhs) const {
-    return (x * rhs.x + y * rhs.y);
   }
   
   vec2& operator+=(const double scalar) {

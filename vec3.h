@@ -23,9 +23,9 @@ public:
   };
   
   vec3& operator=(const vec3& rhs){
-    this->x = x;
-    this->y = y;
-    this->z = z;
+    this->x = rhs.x;
+    this->y = rhs.y;
+    this->z = rhs.z;
     return *this;
   };
   
@@ -79,10 +79,6 @@ public:
   
   friend vec3 operator/( double scalar, const vec3& v ) {
     return vec3(scalar / v.x, scalar / v.y, scalar / v.z);
-  }
-  
-  double dot(const vec3& rhs) const {
-    return (x * rhs.x + y * rhs.y + z * rhs.z);
   }
   
   vec3& operator+=(const double scalar) {
