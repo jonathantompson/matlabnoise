@@ -4,14 +4,9 @@ clearvars; clc; close all;
 
 ydim = 512;
 xdim = 511;
-frequency = 1;
 
 % 2D Grid
-[V, U] = ndgrid(1:ydim, 1:xdim);
-X = 2 * (U - 1) ./ (xdim - 1) - 1;  % [-1, 1]
-Y = 2 * (V - 1) ./ (ydim - 1) - 1;  % [-1, 1]
-X = X * frequency;
-Y = Y * frequency;
+[ X, Y, xstep, ystep ] = ndgrid_normalized( xdim, ydim );
 
 figure;
 noise = Perlin2D(X, Y);
@@ -33,15 +28,21 @@ assert(max(err(:)) < 1e-6, ...
 
 % Check the gradient using finite differences (central)
 epsilon = 1e-6;
-[pos, posGrad] = Perlin2DDeriv(X + epsilon, Y);
-[neg, negGrad] = Perlin2DDeriv(X - epsilon, Y);
+[pos, ~] = Perlin2DDeriv(X + epsilon, Y);
+[neg, ~] = Perlin2DDeriv(X - epsilon, Y);
 dx = (pos - neg) / (2 * epsilon);
-[pos, posGrad] = Perlin2DDeriv(X, Y + epsilon);
-[neg, negGrad] = Perlin2DDeriv(X, Y - epsilon);
+[pos, ~] = Perlin2DDeriv(X, Y + epsilon);
+[neg, ~] = Perlin2DDeriv(X, Y - epsilon);
 dy = (pos - neg) / (2 * epsilon);
 gradNoiseFEM = permute(cat(3, dx, dy), [3 1 2]);
 err = abs(gradNoiseFEM - gradNoise);
 assert(max(err(:)) < 1e-8, 'FEM derivative does not match!');
+
+% Also check the gradient using Matla's approximation
+[dx, dy] = gradient(noise_deriv, xstep, ystep);
+gradNoiseFEM = permute(cat(3, dx, dy), [3 1 2]);
+err = abs(gradNoiseFEM - gradNoise);
+assert(max(err(:)) < 1e-3, 'FEM derivative does not match!');
 
 % 3D Grid
 xdim = 63;
@@ -51,9 +52,6 @@ zdim = 65;
 X = 2 * (U - 1) ./ (xdim - 1) - 1;  % [-1, 1]
 Y = 2 * (V - 1) ./ (ydim - 1) - 1;  % [-1, 1]
 Z = 2 * (D - 1) ./ (zdim - 1) - 1;  % [-1, 1]
-X = X * frequency;
-Y = Y * frequency;
-Z = Z * frequency;
 figure;
 noise = Perlin3D(X, Y, Z);
 plot_3D_scalar(noise);
@@ -73,14 +71,14 @@ title('Perlin3DDeriv');
 
 % Check the gradient using finite differences (central)
 epsilon = 1e-6;
-[pos, posGrad] = Perlin3DDeriv(X + epsilon, Y, Z);
-[neg, negGrad] = Perlin3DDeriv(X - epsilon, Y, Z);
+[pos, ~] = Perlin3DDeriv(X + epsilon, Y, Z);
+[neg, ~] = Perlin3DDeriv(X - epsilon, Y, Z);
 dx = (pos - neg) / (2 * epsilon);
-[pos, posGrad] = Perlin3DDeriv(X, Y + epsilon, Z);
-[neg, negGrad] = Perlin3DDeriv(X, Y - epsilon, Z);
+[pos, ~] = Perlin3DDeriv(X, Y + epsilon, Z);
+[neg, ~] = Perlin3DDeriv(X, Y - epsilon, Z);
 dy = (pos - neg) / (2 * epsilon);
-[pos, posGrad] = Perlin3DDeriv(X, Y, Z + epsilon);
-[neg, negGrad] = Perlin3DDeriv(X, Y, Z - epsilon);
+[pos, ~] = Perlin3DDeriv(X, Y, Z + epsilon);
+[neg, ~] = Perlin3DDeriv(X, Y, Z - epsilon);
 dz = (pos - neg) / (2 * epsilon);
 gradNoiseFEM = permute(cat(4, dx, dy, dz), [4 1 2 3]);
 err = abs(gradNoiseFEM - gradNoise);
@@ -96,3 +94,5 @@ for i = 1:4
   plot_3D_scalar(noise);
   title(['Perlin4D w=', num2str(i)]);
 end
+
+disp('Tests pass!');
