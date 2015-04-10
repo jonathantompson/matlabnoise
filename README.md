@@ -20,6 +20,8 @@ The following functions from Brian's work have been exposed:
 - Perlin3DDeriv
 - Hermite2D
 - Hermite3D
+- Hermite2DDeriv
+- Hermite3DDeriv
 
 Clearly, I'm just using it as a fast Perlin noise implementation in Matlab.  However, given that I have already written the vec2, vec3 and vec4 classes it will be quick work porting more functions from GPU-Noise-Lib.
 

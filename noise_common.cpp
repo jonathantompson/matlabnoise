@@ -47,36 +47,36 @@
 //	http://briansharpe.wordpress.com/2011/11/15/a-fast-and-simple-32bit-floating-point-hash-function/
 //
 //	The 2D hash formula takes the form....
-//	hash = mod( coord.x * coord.x * coord.y * coord.y, SOMELARGEFLOAT ) / SOMELARGEFLOAT
+//	hash = mod( coord.x * coord.x * coord.y * coord.y, SOMELARGEDOUBLE ) / SOMELARGEDOUBLE
 //	We truncate and offset the domain to the most interesting part of the noise.
-//	SOMELARGEFLOAT should be in the range of 400.0->1000.0 and needs to be hand picked.  Only some give good results.
-//	A 3D hash is achieved by offsetting the SOMELARGEFLOAT value by the Z coordinate
+//	SOMELARGEDOUBLE should be in the range of 400.0->1000.0 and needs to be hand picked.  Only some give good results.
+//	A 3D hash is achieved by offsetting the SOMELARGEDOUBLE value by the Z coordinate
 //
 vec4 FAST32_hash_2D( const vec2& gridcell )	//	generates a random number for each of the 4 cell corners
 {
   //	gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   const double domain = 71.0;
-  const double SOMELARGEFLOAT = 951.135664;
+  const double SOMELARGEDOUBLE = 951.135664;
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;	//	truncate the domain
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);								//	offset to interesting part of the noise
   P *= P;											//	calculate and return the hash
-  return fract( vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w) * ( 1.0 / SOMELARGEFLOAT ) );
+  return fract( vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w) * ( 1.0 / SOMELARGEDOUBLE ) );
 }
 void FAST32_hash_2D( const vec2& gridcell, vec4& hash_0, vec4& hash_1 )	//	generates 2 random numbers for each of the 4 cell corners
 {
   //    gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   double domain = 71.0;
-  const vec2 SOMELARGEFLOATS = vec2( 951.135664, 642.949883 );
+  const vec2 SOMELARGEDOUBLES = vec2( 951.135664, 642.949883 );
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  hash_0 = fract( P * ( 1.0 / SOMELARGEFLOATS.x ) );
-  hash_1 = fract( P * ( 1.0 / SOMELARGEFLOATS.y ) );
+  hash_0 = fract( P * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  hash_1 = fract( P * ( 1.0 / SOMELARGEDOUBLES.y ) );
 }
 void FAST32_hash_2D( const vec2& gridcell,
         vec4& hash_0,
@@ -86,15 +86,15 @@ void FAST32_hash_2D( const vec2& gridcell,
   //    gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   const double domain = 71.0;
-  const vec3 SOMELARGEFLOATS = vec3( 951.135664, 642.949883, 803.202459 );
+  const vec3 SOMELARGEDOUBLES = vec3( 951.135664, 642.949883, 803.202459 );
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  hash_0 = fract( P * ( 1.0 / SOMELARGEFLOATS.x ) );
-  hash_1 = fract( P * ( 1.0 / SOMELARGEFLOATS.y ) );
-  hash_2 = fract( P * ( 1.0 / SOMELARGEFLOATS.z ) );
+  hash_0 = fract( P * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  hash_1 = fract( P * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  hash_2 = fract( P * ( 1.0 / SOMELARGEDOUBLES.z ) );
 }
 
 void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	generates a random number for each of the 8 cell corners
@@ -105,7 +105,7 @@ void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	gener
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const double SOMELARGEFLOAT = 635.298681;
+  const double SOMELARGEDOUBLE = 635.298681;
   const double ZINC = 48.500388;
   
   //	truncate the domain
@@ -116,7 +116,7 @@ void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	gener
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell_inc1.x, gridcell_inc1.y ) + vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  vec2 highz_hash_xy = vec2( 1.0 / ( SOMELARGEFLOAT + vec2( gridcell.z, gridcell_inc1.z ) * ZINC ) );
+  vec2 highz_hash_xy = vec2( 1.0 / ( SOMELARGEDOUBLE + vec2( gridcell.z, gridcell_inc1.z ) * ZINC ) );
   highz_hash.x = highz_hash_xy.x;
   highz_hash.y = highz_hash_xy.y;
   lowz_hash = fract( P * vec4(highz_hash.x, highz_hash.x, highz_hash.x, highz_hash.x) );
@@ -135,7 +135,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec3 SOMELARGEFLOATS = vec3( 635.298681, 682.357502, 668.926525 );
+  const vec3 SOMELARGEDOUBLES = vec3( 635.298681, 682.357502, 668.926525 );
   const vec3 ZINC = vec3( 48.500388, 65.294118, 63.934599 );
   
   //	truncate the domain
@@ -149,8 +149,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P = vec4( P.x, V1xy_V2xy.x, V1xy_V2xy.z, P.z ) * vec4( P.y, V1xy_V2xy.y, V1xy_V2xy.w, P.w );
   
   //	get the lowz and highz mods
-  vec3 lowz_mods = vec3( 1.0 / ( SOMELARGEFLOATS + gridcell.z * ZINC ) );
-  vec3 highz_mods = vec3( 1.0 / ( SOMELARGEFLOATS + gridcell_inc1.z * ZINC ) );
+  vec3 lowz_mods = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  vec3 highz_mods = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   
   //	apply mask for v1 and v2 mod values
   v1_mask = ( v1_mask.z < 0.5 ) ? lowz_mods : highz_mods;
@@ -172,7 +172,7 @@ vec4 FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const double SOMELARGEFLOAT = 635.298681;
+  const double SOMELARGEDOUBLE = 635.298681;
   const double ZINC = 48.500388;
   
   //	truncate the domain
@@ -187,7 +187,7 @@ vec4 FAST32_hash_3D( 	vec3 gridcell,
   
   //	get the z mod vals
   vec2 V1z_V2z = vec2( v1_mask.z < 0.5 ? gridcell.z : gridcell_inc1.z, v2_mask.z < 0.5 ? gridcell.z : gridcell_inc1.z );
-  vec4 mod_vals = vec4( 1.0 / ( SOMELARGEFLOAT + vec4( gridcell.z, V1z_V2z.x, V1z_V2z.y, gridcell_inc1.z ) * ZINC ) );
+  vec4 mod_vals = vec4( 1.0 / ( SOMELARGEDOUBLE + vec4( gridcell.z, V1z_V2z.x, V1z_V2z.y, gridcell_inc1.z ) * ZINC ) );
   
   //	compute the final hash
   return fract( P * mod_vals );
@@ -206,7 +206,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec3 SOMELARGEFLOATS = vec3( 635.298681, 682.357502, 668.926525 );
+  const vec3 SOMELARGEDOUBLES = vec3( 635.298681, 682.357502, 668.926525 );
   const vec3 ZINC = vec3( 48.500388, 65.294118, 63.934599 );
   
   //	truncate the domain
@@ -218,8 +218,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
   
-  vec3 lowz_mod = vec3( 1.0 / ( SOMELARGEFLOATS + gridcell.z * ZINC ) );
-  vec3 highz_mod = vec3( 1.0 / ( SOMELARGEFLOATS + gridcell_inc1.z * ZINC ) );
+  vec3 lowz_mod = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  vec3 highz_mod = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   lowz_hash_0 = fract( P * lowz_mod.x );
   highz_hash_0 = fract( P * highz_mod.x );
   lowz_hash_1 = fract( P * lowz_mod.y );
@@ -243,7 +243,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec4 SOMELARGEFLOATS = vec4( 635.298681, 682.357502, 668.926525, 588.255119 );
+  const vec4 SOMELARGEDOUBLES = vec4( 635.298681, 682.357502, 668.926525, 588.255119 );
   const vec4 ZINC = vec4( 48.500388, 65.294118, 63.934599, 63.279683 );
   
   //	truncate the domain
@@ -255,8 +255,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
   
-  lowz_hash_3 = vec4( 1.0 / ( SOMELARGEFLOATS + gridcell.z * ZINC ) );
-  highz_hash_3 = vec4( 1.0 / ( SOMELARGEFLOATS + gridcell_inc1.z * ZINC ) );
+  lowz_hash_3 = vec4( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  highz_hash_3 = vec4( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   lowz_hash_0 = fract( P * lowz_hash_3.x );
   highz_hash_0 = fract( P * highz_hash_3.x );
   lowz_hash_1 = fract( P * lowz_hash_3.y );
@@ -291,7 +291,7 @@ void FAST32_2_hash_4D( 	vec4 gridcell,  // We want to copy the first value
   //			probably requires some kind of brute force computational searching or something....
   const vec4 OFFSET = vec4( 16.841230, 18.774548, 16.873274, 13.664607 );
   const double domain = 69.0;
-  const vec4 SOMELARGEFLOATS = vec4( 56974.746094, 47165.636719, 55049.667969, 49901.273438 );
+  const vec4 SOMELARGEDOUBLES = vec4( 56974.746094, 47165.636719, 55049.667969, 49901.273438 );
   const vec4 SCALE = vec4( 0.102007, 0.114473, 0.139651, 0.084550 );
   
   //	truncate the domain
@@ -308,25 +308,25 @@ void FAST32_2_hash_4D( 	vec4 gridcell,  // We want to copy the first value
   vec4 z0w0_z1w0_z0w1_z1w1 = vec4( gridcell.z, gridcell_inc1.z, gridcell.z, gridcell_inc1.z ) * vec4( gridcell.w, gridcell.w, gridcell_inc1.w, gridcell_inc1.w );
   
   vec4 hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.x;
-  z0w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.x ) );
-  z0w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.y ) );
-  z0w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.z ) );
-  z0w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.w ) );
+  z0w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z0w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z0w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z0w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.y;
-  z1w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.x ) );
-  z1w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.y ) );
-  z1w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.z ) );
-  z1w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.w ) );
+  z1w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z1w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z1w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z1w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.z;
-  z0w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.x ) );
-  z0w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.y ) );
-  z0w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.z ) );
-  z0w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.w ) );
+  z0w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z0w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z0w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z0w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.w;
-  z1w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.x ) );
-  z1w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.y ) );
-  z1w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.z ) );
-  z1w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEFLOATS.w ) );
+  z1w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z1w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z1w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z1w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
 }
 
 //
@@ -814,7 +814,7 @@ double QuinticHermiteDeriv( double x, double ival0, double ival1, double egrad0,
 //  Return value range of -1.0->1.0
 //  http://briansharpe.files.wordpress.com/2012/01/hermitesample.jpg
 //
-double Hermite2D( vec2 P )
+double Hermite2D( const vec2& P )
 {
     //  establish our grid cell and unit position
     vec2 Pi = floor(P);
@@ -850,7 +850,7 @@ double Hermite2D( vec2 P )
 //  Return value range of -1.0->1.0
 //  http://briansharpe.files.wordpress.com/2012/01/hermitesample.jpg
 //
-double Hermite3D( vec3 P )
+double Hermite3D( const vec3& P )
 {
     //  establish our grid cell and unit position
     vec3 Pi = floor(P);
@@ -890,4 +890,119 @@ double Hermite3D( vec3 P )
     QuinticHermite( Pf.z, hash_gradx0, hash_gradx1, hash_grady0, hash_grady1, hash_gradz0, hash_gradz1, ival_results, igrad_results_x, igrad_results_y );
     vec4 qh_results = QuinticHermite( Pf.y, vec4(ival_results.xy(), igrad_results_x.xy()), vec4(ival_results.zw(), igrad_results_x.zw()), vec4( igrad_results_y.xy(), 0.0, 0.0 ), vec4( igrad_results_y.zw(), 0.0, 0.0 ) );
     return QuinticHermite( Pf.x, qh_results.x, qh_results.y, qh_results.z, qh_results.w ) * FINAL_NORM_VAL;
+}
+//
+//  Hermite2D_Deriv
+//  Hermite2D noise with derivatives
+//  returns vec3( value, xderiv, yderiv )
+//
+vec3 Hermite2DDeriv( const vec2& P )
+{
+    //  establish our grid cell and unit position
+    vec2 Pi = floor(P);
+    vec2 Pf = P - Pi;
+
+    //  calculate the hash.
+    //  ( various hashing methods listed in order of speed )
+    vec4 hash_gradx, hash_grady;
+    FAST32_hash_2D( Pi, hash_gradx, hash_grady );
+
+    //  scale the hash values
+    hash_gradx = ( hash_gradx - 0.49999);
+    hash_grady = ( hash_grady - 0.49999);
+
+#if 1
+    //  normalize gradients
+    vec4 norm = inversesqrt( hash_gradx * hash_gradx + hash_grady * hash_grady );
+    hash_gradx *= norm;
+    hash_grady *= norm;
+    const double FINAL_NORM_VAL = 2.2627416997969520780827019587355;
+#else
+    //  unnormalized gradients
+    const double FINAL_NORM_VAL = 3.2;  // 3.2 = 1.0 / ( 0.5 * 0.3125 * 2.0 )
+#endif
+
+    //
+    //  NOTE:  This stuff can be optimized further.
+    //  But it also appears the compiler is doing a lot of that automatically for us anyway
+    //
+
+    vec4 qh_results_x = QuinticHermite( Pf.y, hash_gradx.xy(), hash_gradx.zw(), hash_grady.xy(), hash_grady.zw() );
+    vec4 qh_results_y = QuinticHermite( Pf.x, hash_grady.xz(), hash_grady.yw(), hash_gradx.xz(), hash_gradx.yw() );
+    double finalpos = QuinticHermite( Pf.x, qh_results_x.x, qh_results_x.y, qh_results_x.z, qh_results_x.w );
+    double deriv_x = QuinticHermiteDeriv( Pf.x, qh_results_x.x, qh_results_x.y, qh_results_x.z, qh_results_x.w );
+    double deriv_y = QuinticHermiteDeriv( Pf.y, qh_results_y.x, qh_results_y.y, qh_results_y.z, qh_results_y.w );
+    return vec3( finalpos, deriv_x, deriv_y ) * FINAL_NORM_VAL;
+}
+
+//
+//  Hermite3D_Deriv
+//  Hermite3D noise with derivatives
+//  returns vec3( value, xderiv, yderiv, zderiv )
+//
+vec4 Hermite3DDeriv( const vec3& P )
+{
+    //  establish our grid cell and unit position
+    vec3 Pi = floor(P);
+    vec3 Pf = P - Pi;
+
+    //  calculate the hash.
+    //  ( various hashing methods listed in order of speed )
+    vec4 hash_gradx0, hash_grady0, hash_gradz0, hash_gradx1, hash_grady1, hash_gradz1;
+    FAST32_hash_3D( Pi, hash_gradx0, hash_grady0, hash_gradz0, hash_gradx1, hash_grady1, hash_gradz1 );
+
+    //  scale the hash values
+    hash_gradx0 = ( hash_gradx0 - 0.49999);
+    hash_grady0 = ( hash_grady0 - 0.49999);
+    hash_gradz0 = ( hash_gradz0 - 0.49999);
+    hash_gradx1 = ( hash_gradx1 - 0.49999);
+    hash_grady1 = ( hash_grady1 - 0.49999);
+    hash_gradz1 = ( hash_gradz1 - 0.49999);
+
+#if 1
+    //  normalize gradients
+    vec4 norm0 = inversesqrt( hash_gradx0 * hash_gradx0 + hash_grady0 * hash_grady0 + hash_gradz0 * hash_gradz0 );
+    hash_gradx0 *= norm0;
+    hash_grady0 *= norm0;
+    hash_gradz0 *= norm0;
+    vec4 norm1 = inversesqrt( hash_gradx1 * hash_gradx1 + hash_grady1 * hash_grady1 + hash_gradz1 * hash_gradz1 );
+    hash_gradx1 *= norm1;
+    hash_grady1 *= norm1;
+    hash_gradz1 *= norm1;
+    const double FINAL_NORM_VAL = 1.8475208614068024464292760976063;
+#else
+    //  unnormalized gradients
+    const double FINAL_NORM_VAL = (1.0/0.46875);  // = 1.0 / ( 0.5 * 0.3125 * 3.0 )
+#endif
+
+    //
+    //  NOTE:  This stuff can be optimized further.
+    //  But it also appears the compiler is doing a lot of that automatically for us anyway
+    //
+
+    //  drop things from three dimensions to two
+    vec4 ival_results_z, igrad_results_x_z, igrad_results_y_z;
+    QuinticHermite( Pf.z, hash_gradx0, hash_gradx1, hash_grady0, hash_grady1, hash_gradz0, hash_gradz1, ival_results_z, igrad_results_x_z, igrad_results_y_z );
+
+    vec4 ival_results_y, igrad_results_x_y, igrad_results_z_y;
+    QuinticHermite( Pf.y,   vec4( hash_gradx0.xy(), hash_gradx1.xy() ), vec4( hash_gradx0.zw(), hash_gradx1.zw() ),
+                            vec4( hash_gradz0.xy(), hash_gradz1.xy() ), vec4( hash_gradz0.zw(), hash_gradz1.zw() ),
+                            vec4( hash_grady0.xy(), hash_grady1.xy() ), vec4( hash_grady0.zw(), hash_grady1.zw() ),
+                            ival_results_y, igrad_results_x_y, igrad_results_z_y );
+
+    //  drop things from two dimensions to one
+    vec4 qh_results_x = QuinticHermite( Pf.y, vec4(ival_results_z.xy(), igrad_results_x_z.xy()), vec4(ival_results_z.zw(), igrad_results_x_z.zw()), vec4( igrad_results_y_z.xy(), 0.0, 0.0 ), vec4( igrad_results_y_z.zw(), 0.0, 0.0 ) );
+    vec4 qh_results_y = QuinticHermite( Pf.x, vec4(ival_results_z.xz(), igrad_results_y_z.xz()), vec4(ival_results_z.yw(), igrad_results_y_z.yw()), vec4( igrad_results_x_z.xz(), 0.0, 0.0 ), vec4( igrad_results_x_z.yw(), 0.0, 0.0 ) );
+    vec4 qh_results_z = QuinticHermite( Pf.x, vec4(ival_results_y.xz(), igrad_results_z_y.xz()), vec4(ival_results_y.yw(), igrad_results_z_y.yw()), vec4( igrad_results_x_y.xz(), 0.0, 0.0 ), vec4( igrad_results_x_y.yw(), 0.0, 0.0 ) );
+
+    //  for each hermite curve calculate the derivative
+    double deriv_x = QuinticHermiteDeriv( Pf.x, qh_results_x.x, qh_results_x.y, qh_results_x.z, qh_results_x.w );
+    double deriv_y = QuinticHermiteDeriv( Pf.y, qh_results_y.x, qh_results_y.y, qh_results_y.z, qh_results_y.w );
+    double deriv_z = QuinticHermiteDeriv( Pf.z, qh_results_z.x, qh_results_z.y, qh_results_z.z, qh_results_z.w );
+
+    //  and also the final noise value off any one of them
+    double finalpos = QuinticHermite( Pf.x, qh_results_x.x, qh_results_x.y, qh_results_x.z, qh_results_x.w );
+
+    //  normalize and return results! :)
+    return vec4( finalpos, deriv_x, deriv_y, deriv_z ) * FINAL_NORM_VAL;
 }
