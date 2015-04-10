@@ -2,7 +2,7 @@
 // I Took the code from Brian Sharpe and made a wrapper for it in Matlab
 // I've therefore left the original description intact.
 // EDITS: 1. Wrote simple vec2 vec3 and vec4 classes
-//        2. Changed all doubles to doubles
+//        2. Changed all floats to doubles
 
 //
 //	Code repository for GPU noise development blog
