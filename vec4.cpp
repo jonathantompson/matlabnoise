@@ -55,6 +55,15 @@ vec2 vec4::xy(){
 	return vec2(x,y);
 }
 
+vec2 vec4::xz(){
+	return vec2(x,z);
+}
+
 vec2 vec4::zw(){
 	return vec2(z,w);
+}
+
+
+vec2 vec4::yw(){
+	return vec2(y,w);
 }

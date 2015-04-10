@@ -160,7 +160,9 @@ public:
   };
 
   vec2 xy();
+  vec2 xz();
   vec2 zw();
+  vec2 yw();
 };
 
 vec4 floor(const vec4& rhs);
