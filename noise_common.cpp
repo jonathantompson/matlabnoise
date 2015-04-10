@@ -44,7 +44,7 @@
 //
 //	FAST32_hash
 //	A very fast hashing function.  Requires 32bit support.
-//	http://briansharpe.wordpress.com/2011/11/15/a-fast-and-simple-32bit-doubleing-point-hash-function/
+//	http://briansharpe.wordpress.com/2011/11/15/a-fast-and-simple-32bit-floating-point-hash-function/
 //
 //	The 2D hash formula takes the form....
 //	hash = mod( coord.x * coord.x * coord.y * coord.y, SOMELARGEDOUBLE ) / SOMELARGEDOUBLE
