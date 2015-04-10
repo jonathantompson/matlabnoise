@@ -47,36 +47,36 @@
 //	http://briansharpe.wordpress.com/2011/11/15/a-fast-and-simple-32bit-doubleing-point-hash-function/
 //
 //	The 2D hash formula takes the form....
-//	hash = mod( coord.x * coord.x * coord.y * coord.y, SOMELARGEdouble ) / SOMELARGEdouble
+//	hash = mod( coord.x * coord.x * coord.y * coord.y, SOMELARGEDOUBLE ) / SOMELARGEDOUBLE
 //	We truncate and offset the domain to the most interesting part of the noise.
-//	SOMELARGEdouble should be in the range of 400.0->1000.0 and needs to be hand picked.  Only some give good results.
-//	A 3D hash is achieved by offsetting the SOMELARGEdouble value by the Z coordinate
+//	SOMELARGEDOUBLE should be in the range of 400.0->1000.0 and needs to be hand picked.  Only some give good results.
+//	A 3D hash is achieved by offsetting the SOMELARGEDOUBLE value by the Z coordinate
 //
 vec4 FAST32_hash_2D( const vec2& gridcell )	//	generates a random number for each of the 4 cell corners
 {
   //	gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   const double domain = 71.0;
-  const double SOMELARGEdouble = 951.135664;
+  const double SOMELARGEDOUBLE = 951.135664;
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;	//	truncate the domain
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);								//	offset to interesting part of the noise
   P *= P;											//	calculate and return the hash
-  return fract( vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w) * ( 1.0 / SOMELARGEdouble ) );
+  return fract( vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w) * ( 1.0 / SOMELARGEDOUBLE ) );
 }
 void FAST32_hash_2D( const vec2& gridcell, vec4& hash_0, vec4& hash_1 )	//	generates 2 random numbers for each of the 4 cell corners
 {
   //    gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   double domain = 71.0;
-  const vec2 SOMELARGEdoubleS = vec2( 951.135664, 642.949883 );
+  const vec2 SOMELARGEDOUBLES = vec2( 951.135664, 642.949883 );
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  hash_0 = fract( P * ( 1.0 / SOMELARGEdoubleS.x ) );
-  hash_1 = fract( P * ( 1.0 / SOMELARGEdoubleS.y ) );
+  hash_0 = fract( P * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  hash_1 = fract( P * ( 1.0 / SOMELARGEDOUBLES.y ) );
 }
 void FAST32_hash_2D( const vec2& gridcell,
         vec4& hash_0,
@@ -86,15 +86,15 @@ void FAST32_hash_2D( const vec2& gridcell,
   //    gridcell is assumed to be an integer coordinate
   const vec2 OFFSET = vec2( 26.0, 161.0 );
   const double domain = 71.0;
-  const vec3 SOMELARGEdoubleS = vec3( 951.135664, 642.949883, 803.202459 );
+  const vec3 SOMELARGEDOUBLES = vec3( 951.135664, 642.949883, 803.202459 );
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell.x + 1.0, gridcell.y + 1.0 );
   P = P - floor(P * ( 1.0 / domain )) * domain;
   P += vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  hash_0 = fract( P * ( 1.0 / SOMELARGEdoubleS.x ) );
-  hash_1 = fract( P * ( 1.0 / SOMELARGEdoubleS.y ) );
-  hash_2 = fract( P * ( 1.0 / SOMELARGEdoubleS.z ) );
+  hash_0 = fract( P * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  hash_1 = fract( P * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  hash_2 = fract( P * ( 1.0 / SOMELARGEDOUBLES.z ) );
 }
 
 void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	generates a random number for each of the 8 cell corners
@@ -105,7 +105,7 @@ void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	gener
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const double SOMELARGEdouble = 635.298681;
+  const double SOMELARGEDOUBLE = 635.298681;
   const double ZINC = 48.500388;
   
   //	truncate the domain
@@ -116,7 +116,7 @@ void FAST32_hash_3D( vec3 gridcell, vec4& lowz_hash, vec4& highz_hash )	//	gener
   vec4 P = vec4( gridcell.x, gridcell.y, gridcell_inc1.x, gridcell_inc1.y ) + vec4(OFFSET.x, OFFSET.y, OFFSET.x, OFFSET.y);
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
-  vec2 highz_hash_xy = vec2( 1.0 / ( SOMELARGEdouble + vec2( gridcell.z, gridcell_inc1.z ) * ZINC ) );
+  vec2 highz_hash_xy = vec2( 1.0 / ( SOMELARGEDOUBLE + vec2( gridcell.z, gridcell_inc1.z ) * ZINC ) );
   highz_hash.x = highz_hash_xy.x;
   highz_hash.y = highz_hash_xy.y;
   lowz_hash = fract( P * vec4(highz_hash.x, highz_hash.x, highz_hash.x, highz_hash.x) );
@@ -135,7 +135,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec3 SOMELARGEdoubleS = vec3( 635.298681, 682.357502, 668.926525 );
+  const vec3 SOMELARGEDOUBLES = vec3( 635.298681, 682.357502, 668.926525 );
   const vec3 ZINC = vec3( 48.500388, 65.294118, 63.934599 );
   
   //	truncate the domain
@@ -149,8 +149,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P = vec4( P.x, V1xy_V2xy.x, V1xy_V2xy.z, P.z ) * vec4( P.y, V1xy_V2xy.y, V1xy_V2xy.w, P.w );
   
   //	get the lowz and highz mods
-  vec3 lowz_mods = vec3( 1.0 / ( SOMELARGEdoubleS + gridcell.z * ZINC ) );
-  vec3 highz_mods = vec3( 1.0 / ( SOMELARGEdoubleS + gridcell_inc1.z * ZINC ) );
+  vec3 lowz_mods = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  vec3 highz_mods = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   
   //	apply mask for v1 and v2 mod values
   v1_mask = ( v1_mask.z < 0.5 ) ? lowz_mods : highz_mods;
@@ -172,7 +172,7 @@ vec4 FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const double SOMELARGEdouble = 635.298681;
+  const double SOMELARGEDOUBLE = 635.298681;
   const double ZINC = 48.500388;
   
   //	truncate the domain
@@ -187,7 +187,7 @@ vec4 FAST32_hash_3D( 	vec3 gridcell,
   
   //	get the z mod vals
   vec2 V1z_V2z = vec2( v1_mask.z < 0.5 ? gridcell.z : gridcell_inc1.z, v2_mask.z < 0.5 ? gridcell.z : gridcell_inc1.z );
-  vec4 mod_vals = vec4( 1.0 / ( SOMELARGEdouble + vec4( gridcell.z, V1z_V2z.x, V1z_V2z.y, gridcell_inc1.z ) * ZINC ) );
+  vec4 mod_vals = vec4( 1.0 / ( SOMELARGEDOUBLE + vec4( gridcell.z, V1z_V2z.x, V1z_V2z.y, gridcell_inc1.z ) * ZINC ) );
   
   //	compute the final hash
   return fract( P * mod_vals );
@@ -206,7 +206,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec3 SOMELARGEdoubleS = vec3( 635.298681, 682.357502, 668.926525 );
+  const vec3 SOMELARGEDOUBLES = vec3( 635.298681, 682.357502, 668.926525 );
   const vec3 ZINC = vec3( 48.500388, 65.294118, 63.934599 );
   
   //	truncate the domain
@@ -218,8 +218,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
   
-  vec3 lowz_mod = vec3( 1.0 / ( SOMELARGEdoubleS + gridcell.z * ZINC ) );
-  vec3 highz_mod = vec3( 1.0 / ( SOMELARGEdoubleS + gridcell_inc1.z * ZINC ) );
+  vec3 lowz_mod = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  vec3 highz_mod = vec3( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   lowz_hash_0 = fract( P * lowz_mod.x );
   highz_hash_0 = fract( P * highz_mod.x );
   lowz_hash_1 = fract( P * lowz_mod.y );
@@ -243,7 +243,7 @@ void FAST32_hash_3D( 	vec3 gridcell,
   //			probably requires some kind of brute force computational searching or something....
   const vec2 OFFSET = vec2( 50.0, 161.0 );
   const double domain = 69.0;
-  const vec4 SOMELARGEdoubleS = vec4( 635.298681, 682.357502, 668.926525, 588.255119 );
+  const vec4 SOMELARGEDOUBLES = vec4( 635.298681, 682.357502, 668.926525, 588.255119 );
   const vec4 ZINC = vec4( 48.500388, 65.294118, 63.934599, 63.279683 );
   
   //	truncate the domain
@@ -255,8 +255,8 @@ void FAST32_hash_3D( 	vec3 gridcell,
   P *= P;
   P = vec4(P.x, P.z, P.x, P.z) * vec4(P.y, P.y, P.w, P.w);
   
-  lowz_hash_3 = vec4( 1.0 / ( SOMELARGEdoubleS + gridcell.z * ZINC ) );
-  highz_hash_3 = vec4( 1.0 / ( SOMELARGEdoubleS + gridcell_inc1.z * ZINC ) );
+  lowz_hash_3 = vec4( 1.0 / ( SOMELARGEDOUBLES + gridcell.z * ZINC ) );
+  highz_hash_3 = vec4( 1.0 / ( SOMELARGEDOUBLES + gridcell_inc1.z * ZINC ) );
   lowz_hash_0 = fract( P * lowz_hash_3.x );
   highz_hash_0 = fract( P * highz_hash_3.x );
   lowz_hash_1 = fract( P * lowz_hash_3.y );
@@ -291,7 +291,7 @@ void FAST32_2_hash_4D( 	vec4 gridcell,  // We want to copy the first value
   //			probably requires some kind of brute force computational searching or something....
   const vec4 OFFSET = vec4( 16.841230, 18.774548, 16.873274, 13.664607 );
   const double domain = 69.0;
-  const vec4 SOMELARGEdoubleS = vec4( 56974.746094, 47165.636719, 55049.667969, 49901.273438 );
+  const vec4 SOMELARGEDOUBLES = vec4( 56974.746094, 47165.636719, 55049.667969, 49901.273438 );
   const vec4 SCALE = vec4( 0.102007, 0.114473, 0.139651, 0.084550 );
   
   //	truncate the domain
@@ -308,25 +308,25 @@ void FAST32_2_hash_4D( 	vec4 gridcell,  // We want to copy the first value
   vec4 z0w0_z1w0_z0w1_z1w1 = vec4( gridcell.z, gridcell_inc1.z, gridcell.z, gridcell_inc1.z ) * vec4( gridcell.w, gridcell.w, gridcell_inc1.w, gridcell_inc1.w );
   
   vec4 hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.x;
-  z0w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.x ) );
-  z0w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.y ) );
-  z0w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.z ) );
-  z0w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.w ) );
+  z0w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z0w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z0w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z0w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.y;
-  z1w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.x ) );
-  z1w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.y ) );
-  z1w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.z ) );
-  z1w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.w ) );
+  z1w0_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z1w0_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z1w0_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z1w0_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.z;
-  z0w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.x ) );
-  z0w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.y ) );
-  z0w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.z ) );
-  z0w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.w ) );
+  z0w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z0w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z0w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z0w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
   hashval = x0y0_x1y0_x0y1_x1y1 * z0w0_z1w0_z0w1_z1w1.w;
-  z1w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.x ) );
-  z1w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.y ) );
-  z1w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.z ) );
-  z1w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEdoubleS.w ) );
+  z1w1_hash_0 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.x ) );
+  z1w1_hash_1 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.y ) );
+  z1w1_hash_2 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.z ) );
+  z1w1_hash_3 = fract( hashval * ( 1.0 / SOMELARGEDOUBLES.w ) );
 }
 
 //
