@@ -1,5 +1,6 @@
 #include <math.h>
 #include "vec4.h"
+#include "vec2.h"
 
 vec4 floor(const vec4& rhs) {
   return vec4(floor(rhs.x), floor(rhs.y), floor(rhs.z), floor(rhs.w));
@@ -34,4 +35,26 @@ vec4 mix(const vec4& x, const vec4& y, const vec4& a) {
               x.y * (1 - a.y) + y.y * a.y,
               x.z * (1 - a.z) + y.z * a.z,
               x.w * (1 - a.w) + y.w * a.w);
+}
+
+vec4::vec4(vec2 xy, vec2 zw){
+	this->x = xy.x;
+	this->y = xy.y;
+	this->z = zw.x;
+	this->w = zw.y;
+}
+
+vec4::vec4(vec2 xy, double z, double w){
+	this->x = xy.x;
+	this->y = xy.y;
+	this->z = z;
+	this->w = w;
+}
+
+vec2 vec4::xy(){
+	return vec2(x,y);
+}
+
+vec2 vec4::zw(){
+	return vec2(z,w);
 }

@@ -732,3 +732,162 @@ vec4 Perlin3DDeriv( const vec3& P )
   result *= 1.1547005383792515290182975610039;		//	(optionally) scale things to a strict -1.0->1.0 range    *= 1.0/sqrt(0.75)
   return result;
 }
+//
+//  Quintic Hermite Interpolation
+//  http://www.rose-hulman.edu/~finn/CCLI/Notes/day09.pdf
+//
+//  NOTE: maximum value of a hermitequintic interpolation with zero acceleration at the endpoints would be...
+//        f(x=0.5) = MAXPOS + MAXVELOCITY * ( ( x - 6x^3 + 8x^4 - 3x^5 ) - ( -4x^3 + 7x^4 -3x^5 ) ) = MAXPOS + MAXVELOCITY * 0.3125
+//
+//  variable naming conventions:
+//  val = value ( position )
+//  grad = gradient ( velocity )
+//  x = 0.0->1.0 ( time )
+//  i = interpolation = a value to be interpolated
+//  e = evaluation = a value to be used to calculate the interpolation
+//  0 = start
+//  1 = end
+//
+double QuinticHermite( double x, double ival0, double ival1, double egrad0, double egrad1 )       // quintic hermite with start/end acceleration of 0.0
+{
+    const vec3 C0 = vec3( -15.0, 8.0, 7.0 );
+    const vec3 C1 = vec3( 6.0, -3.0, -3.0 );
+    const vec3 C2 = vec3( 10.0, -6.0, -4.0 );
+    vec3 h123 = ( ( ( C0 + C1 * x ) * x ) + C2 ) * ( x*x*x );
+    return ival0 + dot( vec3( (ival1 - ival0), egrad0, egrad1 ), h123 + vec3( 0.0, x, 0.0 ) );
+}
+vec4 QuinticHermite( double x, vec4 ival0, vec4 ival1, vec4 egrad0, vec4 egrad1 )        // quintic hermite with start/end acceleration of 0.0
+{
+    const vec3 C0 = vec3( -15.0, 8.0, 7.0 );
+    const vec3 C1 = vec3( 6.0, -3.0, -3.0 );
+    const vec3 C2 = vec3( 10.0, -6.0, -4.0 );
+    vec3 h123 = ( ( ( C0 + C1 * x ) * x ) + C2 ) * ( x*x*x );
+    return ival0 + (ival1 - ival0) * h123.xxxx() + egrad0 * vec4( h123.y + x ) + egrad1 * h123.zzzz();
+}
+vec4 QuinticHermite( double x, vec2 igrad0, vec2 igrad1, vec2 egrad0, vec2 egrad1 )      // quintic hermite with start/end position and acceleration of 0.0
+{
+    const vec3 C0 = vec3( -15.0, 8.0, 7.0 );
+    const vec3 C1 = vec3( 6.0, -3.0, -3.0 );
+    const vec3 C2 = vec3( 10.0, -6.0, -4.0 );
+    vec3 h123 = ( ( ( C0 + C1 * x ) * x ) + C2 ) * ( x*x*x );
+    return vec4( egrad1, igrad0 ) * vec4( h123.zz(), 1.0, 1.0 ) + vec4( egrad0, h123.xx() ) * vec4( vec2( h123.y + x ), (igrad1 - igrad0) );    //  returns vec4( out_ival.xy, out_igrad.xy )
+}
+void QuinticHermite(    double x,
+                        vec4 ival0, vec4 ival1,         //  values are interpolated using the gradient arguments
+                        vec4 igrad_x0, vec4 igrad_x1,   //  gradients are interpolated using eval gradients of 0.0
+                        vec4 igrad_y0, vec4 igrad_y1,
+                        vec4 egrad0, vec4 egrad1,       //  our evaluation gradients
+                        vec4& out_ival, vec4& out_igrad_x, vec4& out_igrad_y ) // quintic hermite with start/end acceleration of 0.0
+{
+    const vec3 C0 = vec3( -15.0, 8.0, 7.0 );
+    const vec3 C1 = vec3( 6.0, -3.0, -3.0 );
+    const vec3 C2 = vec3( 10.0, -6.0, -4.0 );
+    vec3 h123 = ( ( ( C0 + C1 * x ) * x ) + C2 ) * ( x*x*x );
+    out_ival = ival0 + (ival1 - ival0) * h123.xxxx() + egrad0 * vec4( h123.y + x ) + egrad1 * h123.zzzz();
+    out_igrad_x = igrad_x0 + (igrad_x1 - igrad_x0) * h123.xxxx(); //  NOTE: gradients of 0.0
+    out_igrad_y = igrad_y0 + (igrad_y1 - igrad_y0) * h123.xxxx(); //  NOTE: gradients of 0.0
+}
+void QuinticHermite(    double x,
+                        vec4 igrad_x0, vec4 igrad_x1,   //  gradients are interpolated using eval gradients of 0.0
+                        vec4 igrad_y0, vec4 igrad_y1,
+                        vec4 egrad0, vec4 egrad1,       //  our evaluation gradients
+                        vec4& out_ival, vec4& out_igrad_x, vec4& out_igrad_y ) // quintic hermite with start/end position and acceleration of 0.0
+{
+    const vec3 C0 = vec3( -15.0, 8.0, 7.0 );
+    const vec3 C1 = vec3( 6.0, -3.0, -3.0 );
+    const vec3 C2 = vec3( 10.0, -6.0, -4.0 );
+    vec3 h123 = ( ( ( C0 + C1 * x ) * x ) + C2 ) * ( x*x*x );
+    out_ival = egrad0 * vec4( h123.y + x ) + egrad1 * h123.zzzz();
+    out_igrad_x = igrad_x0 + (igrad_x1 - igrad_x0) * h123.xxxx(); //  NOTE: gradients of 0.0
+    out_igrad_y = igrad_y0 + (igrad_y1 - igrad_y0) * h123.xxxx(); //  NOTE: gradients of 0.0
+}
+double QuinticHermiteDeriv( double x, double ival0, double ival1, double egrad0, double egrad1 )  // gives the derivative of quintic hermite with start/end acceleration of 0.0
+{
+    const vec3 C0 = vec3( 30.0, -15.0, -15.0 );
+    const vec3 C1 = vec3( -60.0, 32.0, 28.0 );
+    const vec3 C2 = vec3( 30.0, -18.0, -12.0 );
+    vec3 h123 = ( ( ( C1 + C0 * x ) * x ) + C2 ) * ( x*x );
+    return dot( vec3( (ival1 - ival0), egrad0, egrad1 ), h123.xyz() + vec3( 0.0, 1.0, 0.0 ) );
+}
+//
+//  Hermite2D
+//  Return value range of -1.0->1.0
+//  http://briansharpe.files.wordpress.com/2012/01/hermitesample.jpg
+//
+double Hermite2D( vec2 P )
+{
+    //  establish our grid cell and unit position
+    vec2 Pi = floor(P);
+    vec2 Pf = P - Pi;
+
+    //  calculate the hash.
+    //  ( various hashing methods listed in order of speed )
+    vec4 hash_gradx, hash_grady;
+    FAST32_hash_2D( Pi, hash_gradx, hash_grady );
+
+    //  scale the hash values
+    hash_gradx = ( hash_gradx - 0.49999);
+    hash_grady = ( hash_grady - 0.49999);
+
+#if 1
+    //  normalize gradients
+    vec4 norm = inversesqrt( hash_gradx * hash_gradx + hash_grady * hash_grady );
+    hash_gradx *= norm;
+    hash_grady *= norm;
+    const double FINAL_NORM_VAL = 2.2627416997969520780827019587355;
+#else
+    //  unnormalized gradients
+    const double FINAL_NORM_VAL = 3.2;  // 3.2 = 1.0 / ( 0.5 * 0.3125 * 2.0 )
+#endif
+
+    //  evaluate the hermite
+    vec4 qh_results = QuinticHermite( Pf.y, hash_gradx.xy(), hash_gradx.zw(), hash_grady.xy(), hash_grady.zw() );
+    return QuinticHermite( Pf.x, qh_results.x, qh_results.y, qh_results.z, qh_results.w ) * FINAL_NORM_VAL;
+}
+
+//
+//  Hermite3D
+//  Return value range of -1.0->1.0
+//  http://briansharpe.files.wordpress.com/2012/01/hermitesample.jpg
+//
+double Hermite3D( vec3 P )
+{
+    //  establish our grid cell and unit position
+    vec3 Pi = floor(P);
+    vec3 Pf = P - Pi;
+
+    //  calculate the hash.
+    //  ( various hashing methods listed in order of speed )
+    vec4 hash_gradx0, hash_grady0, hash_gradz0, hash_gradx1, hash_grady1, hash_gradz1;
+    FAST32_hash_3D( Pi, hash_gradx0, hash_grady0, hash_gradz0, hash_gradx1, hash_grady1, hash_gradz1 );
+
+    //  scale the hash values
+    hash_gradx0 = ( hash_gradx0 - 0.49999);
+    hash_grady0 = ( hash_grady0 - 0.49999);
+    hash_gradz0 = ( hash_gradz0 - 0.49999);
+    hash_gradx1 = ( hash_gradx1 - 0.49999);
+    hash_grady1 = ( hash_grady1 - 0.49999);
+    hash_gradz1 = ( hash_gradz1 - 0.49999);
+
+#if 1
+    //  normalize gradients
+    vec4 norm0 = inversesqrt( hash_gradx0 * hash_gradx0 + hash_grady0 * hash_grady0 + hash_gradz0 * hash_gradz0 );
+    hash_gradx0 *= norm0;
+    hash_grady0 *= norm0;
+    hash_gradz0 *= norm0;
+    vec4 norm1 = inversesqrt( hash_gradx1 * hash_gradx1 + hash_grady1 * hash_grady1 + hash_gradz1 * hash_gradz1 );
+    hash_gradx1 *= norm1;
+    hash_grady1 *= norm1;
+    hash_gradz1 *= norm1;
+    const double FINAL_NORM_VAL = 1.8475208614068024464292760976063;
+#else
+    //  unnormalized gradients
+    const double FINAL_NORM_VAL = (1.0/0.46875);  // = 1.0 / ( 0.5 * 0.3125 * 3.0 )
+#endif
+
+    //  evaluate the hermite
+    vec4 ival_results, igrad_results_x, igrad_results_y;
+    QuinticHermite( Pf.z, hash_gradx0, hash_gradx1, hash_grady0, hash_grady1, hash_gradz0, hash_gradz1, ival_results, igrad_results_x, igrad_results_y );
+    vec4 qh_results = QuinticHermite( Pf.y, vec4(ival_results.xy(), igrad_results_x.xy()), vec4(ival_results.zw(), igrad_results_x.zw()), vec4( igrad_results_y.xy(), 0.0, 0.0 ), vec4( igrad_results_y.zw(), 0.0, 0.0 ) );
+    return QuinticHermite( Pf.x, qh_results.x, qh_results.y, qh_results.z, qh_results.w ) * FINAL_NORM_VAL;
+}

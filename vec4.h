@@ -1,4 +1,7 @@
 #pragma once
+//fwd declaration of vec2
+class vec2;
+
 
 class vec4 {
 public:
@@ -24,6 +27,9 @@ public:
     this->z = scalar;
     this->w = scalar;
   };
+
+  vec4(vec2 xy, vec2 zw);
+  vec4(vec2 xy, double z, double w);
   
   vec4& operator=(const vec4& rhs){
     this->x = rhs.x;
@@ -152,6 +158,9 @@ public:
   vec4 operator-=(const vec4& rhs) const {
     return vec4(x - rhs.x, y - rhs.y, z - rhs.z, w - rhs.w);
   };
+
+  vec2 xy();
+  vec2 zw();
 };
 
 vec4 floor(const vec4& rhs);
