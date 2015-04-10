@@ -1,5 +1,7 @@
 #include <math.h>
+#include "vec4.h"
 #include "vec3.h"
+#include "vec2.h"
 
 vec3 floor(const vec3& rhs) {
   return vec3(floor(rhs.x), floor(rhs.y), floor(rhs.z));
@@ -25,4 +27,24 @@ vec3 inversesqrt(const vec3& rhs) {
 
 double dot(const vec3& a, const vec3& b) {
   return (a.x * b.x + a.y * b.y + a.z * b.z);
+}
+
+vec4 vec3::xxxx(){
+	return vec4(x,x,x,x);
+}
+
+vec4 vec3::zzzz(){
+	return vec4(z,z,z,z);
+}
+
+vec2 vec3::zz(){
+	return vec2(z,z);
+}
+
+vec2 vec3::xx(){
+	return vec2(x,x);
+}
+
+vec3 vec3::xyz(){
+	return *this;
 }

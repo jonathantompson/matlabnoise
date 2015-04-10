@@ -7,8 +7,12 @@ xdim = 511;
 
 % 2D Grid
 [ X, Y, xstep, ystep ] = ndgrid_normalized( xdim, ydim );
-
 figure;
+noise = Hermite2D(X, Y);
+imshow(noise, [min(noise(:)) max(noise(:))]);
+title('Hermite2D');
+figure;
+
 noise = Perlin2D(X, Y);
 imshow(noise, [min(noise(:)) max(noise(:))]);
 title('Perlin2D');
@@ -52,10 +56,17 @@ zdim = 65;
 X = 2 * (U - 1) ./ (xdim - 1) - 1;  % [-1, 1]
 Y = 2 * (V - 1) ./ (ydim - 1) - 1;  % [-1, 1]
 Z = 2 * (D - 1) ./ (zdim - 1) - 1;  % [-1, 1]
+
+figure;
+noise = Hermite3D(X, Y, Z);
+plot_3D_scalar(noise);
+title('Hermite3D');
+
 figure;
 noise = Perlin3D(X, Y, Z);
 plot_3D_scalar(noise);
 title('Perlin3D');
+
 
 % 3D Gradient
 [noise_deriv, gradNoise] = Perlin3DDeriv(X, Y, Z);
@@ -94,5 +105,7 @@ for i = 1:4
   plot_3D_scalar(noise);
   title(['Perlin4D w=', num2str(i)]);
 end
+
+
 
 disp('Tests pass!');

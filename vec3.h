@@ -1,5 +1,9 @@
 #pragma once
 
+//fwd declaration of vec2 vec4
+class vec2;
+class vec4;
+
 class vec3 {
 public:
   double x, y, z;
@@ -140,6 +144,13 @@ public:
   vec3 operator-=(const vec3& rhs) const {
     return vec3(x - rhs.x, y - rhs.y, z - rhs.z);
   };
+
+  vec4 xxxx();
+  vec4 zzzz();
+  vec2 zz();
+  vec2 xx();
+  vec3 xyz();
+
 };
 
 vec3 floor(const vec3& rhs);
