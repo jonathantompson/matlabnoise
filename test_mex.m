@@ -13,7 +13,6 @@ figure;
 noise = Hermite2D(X, Y);
 imshow(noise, [min(noise(:)) max(noise(:))]);
 title('Hermite2D');
-figure;
 
 % 2D Gradient
 [noise_deriv, gradNoise] = Hermite2DDeriv(X, Y);
@@ -44,6 +43,7 @@ err = abs(gradNoiseFEM - gradNoise);
 assert(max(err(:)) < 1e-3, 'FEM derivative does not match!');
 
 %PERLIN NOISE TESTS
+figure;
 noise = Perlin2D(X, Y);
 imshow(noise, [min(noise(:)) max(noise(:))]);
 title('Perlin2D');
