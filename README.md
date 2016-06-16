@@ -48,7 +48,7 @@ sudo apt-get install swig
 Then run:
 
 ```
-bash compile_python_unix.sh
+bash compile_python2_unix.sh
 ```
 
 This will produce the ``_matlabnoise.so`` output. From this you can then run the test script.
@@ -57,4 +57,4 @@ This will produce the ``_matlabnoise.so`` output. From this you can then run the
 python test_python.py
 ```
 
-(note you will need matplotlib and numpy in order to run the test results.)
+(note you will need matplotlib and numpy in order to run the test results.) For python 3.x obviously run the ``compile_python3_unix.sh`` script instead.
