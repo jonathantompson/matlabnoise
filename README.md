@@ -1,4 +1,4 @@
-**matlabnoise - Matlab noise library**
+**matlabnoise - Matlab (and python) noise library**
 ---------
 ---------
 ![Image of Perlin Gradient Field](grad_field.jpg)
@@ -34,3 +34,27 @@ Run "compile_mex.m".
 ---------------
 
 Run "test_mex.m" for a usage demo.
+
+**UPDATE: python 2 wrapper**
+---------------
+
+I also have a swig wrapper around the functions as well. For this you'll need to install the python 2 headers and swig.
+
+```
+sudo apt-get install python2.7-dev
+sudo apt-get install swig
+```
+
+Then run:
+
+```
+bash compile_python_unix.sh
+```
+
+This will produce the ``_matlabnoise.so`` output. From this you can then run the test script.
+
+```
+python test_python.py
+```
+
+(note you will need matplotlib and numpy in order to run the test results.)

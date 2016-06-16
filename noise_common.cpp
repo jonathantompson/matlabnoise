@@ -1006,3 +1006,60 @@ vec4 Hermite3DDeriv( const vec3& P )
     //  normalize and return results! :)
     return vec4( finalpos, deriv_x, deriv_y, deriv_z ) * FINAL_NORM_VAL;
 }
+
+double Perlin2D(const double x, const double y) {
+  return Perlin2D(vec2(x, y));
+}
+
+double Perlin3D(const double x, const double y, const double z) {
+  return Perlin3D(vec3(x, y, z));
+}
+
+double Perlin4D(const double x, const double y, const double z,
+                const double w) {
+  return Perlin4D(vec4(x, y, z, w));
+}
+
+void Perlin2DDeriv(const double x, const double y, double* value,
+                   double* xderiv, double* yderiv) {
+  const vec3 ret = Perlin2DDeriv(vec2(x, y));
+  *value = ret.x;
+  *xderiv = ret.y;
+  *yderiv = ret.z;
+}
+
+void Perlin3DDeriv(const double x, const double y, const double z,
+                   double* value, double* xderiv, double* yderiv,
+                   double* zderiv) {
+  const vec4 ret = Perlin3DDeriv(vec3(x, y, z));
+  *value = ret.x;
+  *xderiv = ret.y;
+  *yderiv = ret.z;
+  *zderiv = ret.w;
+}
+
+double Hermite2D(const double x, const double y) {
+  return Hermite2D(vec2(x, y));
+}
+
+double Hermite3D(const double x, const double y, const double z) {
+  return Hermite3D(vec3(x, y, z));
+}
+
+void Hermite3DDeriv(const double x, const double y, const double z,
+                    double* value, double* xderiv, double* yderiv,
+                    double* zderiv) {
+  const vec4 ret = Hermite3DDeriv(vec3(x, y, z));
+  *value = ret.x;
+  *xderiv = ret.y;
+  *yderiv = ret.z;
+  *zderiv = ret.w;
+}
+
+void Hermite2DDeriv(const double x, const double y, double* value,
+                    double* xderiv, double* yderiv) {
+  const vec3 ret = Hermite2DDeriv(vec2(x, y));
+  *value = ret.x;
+  *xderiv = ret.y;
+  *yderiv = ret.z;
+}

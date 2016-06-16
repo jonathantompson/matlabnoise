@@ -1,2 +1,8 @@
+matlabnoise_wrap.cxx
+_matlabnoise.so
 *.mexw64
+*.pyc
+*.mexa64
 *.asv
+*.swp
+*.o
