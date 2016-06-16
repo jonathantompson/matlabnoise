@@ -6,3 +6,4 @@ _matlabnoise.so
 *.asv
 *.swp
 *.o
+matlabnoise.py
