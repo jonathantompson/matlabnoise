@@ -23,7 +23,7 @@ The following functions from Brian's work have been exposed:
 - Hermite2DDeriv
 - Hermite3DDeriv
 
-Given that I have already written the vec2, vec3 and vec4 classes it will be quick work porting more functions from GPU-Noise-Lib.  Thanks to @kristofe for help porting the Hermite functions :-)
+Given that I have already written the vec2, vec3 and vec4 classes it will be quick work porting more functions from GPU-Noise-Lib.
 
 **Compilation**
 ---------------
